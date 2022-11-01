@@ -1,0 +1,20 @@
+
+html, body {
+    height: 100%;
+}
+
+.center-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+}
+
+p{
+    color: #0072ff;
+    font-weight: bold;
+    font-size: x-large;
+    text-transform: capitalize;
+}

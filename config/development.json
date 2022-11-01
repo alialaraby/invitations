@@ -1,0 +1,8 @@
+{
+    "name": "Invitations App - Development",
+    "path_folder": "../attachment/",
+    "CLIENT_ID": "924531019337-coesfp3s5bo4k4suluk0ecls0fs353pi.apps.googleusercontent.com",
+    "CLIENT_SECRET": "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",
+    "REDIRECT_URI": "https://developers.google.com/oauthplayground",
+    "REFRESH_TOKEN": "1//040ZOKAIWtqY5CgYIARAAGAQSNwF-L9Ir7wVFhSKvkTnzFo3aoMgGvvHbsg-lIrhF7H267uwwiOxijXpo-_FjDHQkQM__XETu2Jo"
+}
