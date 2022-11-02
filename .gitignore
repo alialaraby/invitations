@@ -103,8 +103,21 @@ dist
 # TernJS port file
 .tern-port
 
-#attachments folders
-attachment
-
-#vscode node.js debugger
+#debugging configs
 /.vscode
+
+
+#winston error log
+errorsLog.log 
+exceptions.log
+
+# Other Files
+/logs.txt
+/attachment
+/logs
+uploads
+
+#winston error log
+errors.log 
+
+package-lock.json

@@ -1,8 +1,13 @@
 {
-    "name": "Invitations App - Development",
-    "path_folder": "../attachment/",
-    "CLIENT_ID": "924531019337-coesfp3s5bo4k4suluk0ecls0fs353pi.apps.googleusercontent.com",
-    "CLIENT_SECRET": "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",
-    "REDIRECT_URI": "https://developers.google.com/oauthplayground",
-    "REFRESH_TOKEN": "1//040ZOKAIWtqY5CgYIARAAGAQSNwF-L9Ir7wVFhSKvkTnzFo3aoMgGvvHbsg-lIrhF7H267uwwiOxijXpo-_FjDHQkQM__XETu2Jo"
+    "name": "invitations-backend - development",
+    "port": "3000",
+    "host_url": "46.101.230.98:600",
+    "mailer_email": "alisakralaraby@gmail.com",
+    "mailer_password": "nhahbrazcdtdjyna",
+    "db_connectionString": "mongodb://localhost:27017/invitations",
+    "auth_key": "invitations-app@#",
+    "db_username": "admin",
+    "db_password": "invitations-app@#",
+    "salt_rounds": "12",
+    "fcm_key": "AAAA8XB3pzk:APA91bHesa1FHbDKI9NDxv1rpbU4MgRYCvrAr-EIZH0kq5EF_hTogq8Ndl7gCKObW8JFwmlTGCrmkNSMOmRMyiQKKF7N9XTZjTAHu754eOn69AjjkxN6AuD_RMO-HO8rge3LL5lFN0nf"
 }
