@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Admin, { IAdmin } from "../model/admin";
+import User, { IUser } from "../model/user";
 
 export class AdminDao {
 
@@ -63,6 +64,30 @@ export class AdminDao {
                 let count = await Admin.countDocuments({ isDeleted: false });
 
                 resolve({items, count});
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    public getUserByPhone(phone: string): Promise<IUser> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let item = await User.findOne({ phone: phone.trim().toLowerCase() });
+
+                resolve(item);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    public getSubmittedUser(submittedPhone: string): Promise<IUser> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let item = await User.findOne({ registeredPhone: submittedPhone.trim().toLowerCase() });
+
+                resolve(item);
             } catch (error) {
                 reject(error);
             }

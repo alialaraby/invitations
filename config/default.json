@@ -1,5 +1,8 @@
 {
     "name": "invitations-backend",
+    "twillio_sid": "ACb6991b656329d038a36a49af4e4df30b",
+    "twillio_auth_token": "cd25e557fe47a7bc730e9d3590b46e0e",
+    "twillio_phone": "+14155238886",
     "port": "3000",
     "host_url": "46.101.230.98:600",
     "mailer_email": "alisakralaraby@gmail.com",
