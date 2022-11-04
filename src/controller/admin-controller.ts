@@ -65,7 +65,7 @@ export class AdminController {
                             
                             // await Twillio.sendInvitationLink(phones[i], `${request.invitationLink}?${hashedPhone}`);
                             await Twillio.sendInvitationLink(phones[i], hashedPhone);
-                            await AxiosRequest.send(phones[i], hashedPhone);
+                            await AxiosRequest.sendInvitationLink(phones[i], hashedPhone);
 
                             let addedUser = new User();
                             addedUser.phone = phones[i];
@@ -164,6 +164,7 @@ export class AdminController {
                 }
 
                 await Twillio.sendQRLink(user.phone, user.hashedPhone);
+                await AxiosRequest.sendQRLink(user.phone, user.hashedPhone);
 
                 user.adminSentQR = true;
                 await user.save();

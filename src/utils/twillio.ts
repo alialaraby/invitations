@@ -11,7 +11,7 @@ export class Twillio {
             client.messages
                 .create({
                     from: `whatsapp:${config.get('twillio_phone')}`,
-                    body: `Details: https://api.niletaxi.app/api/registration?vertX=${message}`,
+                    body: `Details: h-ttp://143.198.148.87:82/api/open-form?vertX=${message}`,
                     // body: `Details: https://www.youtube.com/watch?v=Su8ui2uhipI`,
                     // body: `Details: ${message}`,
                     to: `whatsapp:+2${phone}`
@@ -34,7 +34,7 @@ export class Twillio {
             client.messages
                 .create({
                     from: `whatsapp:${config.get('twillio_phone')}`,
-                    body: `Details: https://api.niletaxi.app/api/registration?phone=${phone}&vertX=${message}`,
+                    body: `Details: h-ttp://143.198.148.87:82/api/open-qr-code?phone=${phone}&vertX=${message}`,
                     // body: `Details: https://www.youtube.com/watch?v=Su8ui2uhipI`,
                     // body: `Details: ${message}`,
                     to: `whatsapp:+2${phone}`
