@@ -7,6 +7,37 @@ const axios = require('axios').default;
 
 export class AxiosRequest {
 
+    public static send(phone: string, message: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+
+            const Version = 'v15.0';
+            const PhoneNumberId = '100878516177623';
+            const Token = 'EAAWsnSTLGKQBABZCqwgAzwxQzbOnU6IYLO6KB7ZA3kmxWQPXt54ZBZAyznur9DikIbSXwe2xQZBthm3K3tzaZARZCJw3mLU8yGHz23vblG7TPfC7BZC4QpIKjil523SZBXUJXjRlIYTeCyhKgAmb0zu4VhRkL7JHthTbx6ZCmUdiM3vzHwIQHvT7Q9QuNCpGMBw72jSBe6noqZAom2ZApFc5mbJxrCieKxtqFXIZD';
+
+            const config = {
+                headers: { Authorization: `Bearer ${Token}` }
+            };
+
+            axios.post(`https://graph.facebook.com/${Version}/${PhoneNumberId}/messages`,
+                {
+                    "messaging_product": "whatsapp",
+                    "to": "201062010053",
+                    "text": {
+                        "preview_url": true,
+                        "body": `Details: https://api.niletaxi.app/api/registration?phone=${phone}&vertX=${message}`
+                    }
+                },
+                config
+            )
+                .then(function (response: any) {
+                    resolve(response);
+                })
+                .catch(function (error) {
+                    reject(error);
+                });
+        })
+    }
+
     public static getAuthRequestToken(): Promise<any> {
         return new Promise((resolve, reject) => {
             axios.post(

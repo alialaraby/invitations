@@ -10,6 +10,7 @@ import { ISubmitForm } from "../interface/request-body/admin/submit-registration
 import { IResponseBody } from "../interface/response-body";
 import { IUserPayload } from "../interface/user-payload";
 import User from "../model/user";
+import { AxiosRequest } from "../utils/axios-request";
 import { Twillio } from "../utils/twillio";
 
 export class AdminController {
@@ -64,6 +65,7 @@ export class AdminController {
                             
                             // await Twillio.sendInvitationLink(phones[i], `${request.invitationLink}?${hashedPhone}`);
                             await Twillio.sendInvitationLink(phones[i], hashedPhone);
+                            await AxiosRequest.send(phones[i], hashedPhone);
 
                             let addedUser = new User();
                             addedUser.phone = phones[i];

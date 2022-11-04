@@ -42,50 +42,50 @@ app.get('/', (req, res) => {
   res.send('Hi There!');
 });
 
-function submitForm(request: any): Promise<{done: boolean, code: any}> {
+function submitForm(request: any): Promise<{ done: boolean, code: any }> {
   return new Promise(async (resolve, reject) => {
-      try {
-          let hashedPhone = request.vartX;
+    try {
+      let hashedPhone = request.vertX;
 
-          let user = await User.findOne({ phone: request.phone.trim().toLowerCase() });
-          if(user && user.submittedRegistration){
-              return resolve({
-                  // message: 'Thank you, you already submitted the form',
-                  done: false,
-                  code: StatusCode.AlreadyExists
-              });
-          }
-
-          if(!user){
-              return resolve({
-                  // message: 'Sorry, You are not eligible for this invitation.',
-                  done: false,
-                  code: StatusCode.UnAuthorized
-              });
-          }
-
-          let match = await PasswordHelper.comparePassword(user.phone, hashedPhone);
-          if(!match){
-              return resolve({
-                  // message: 'Sorry, You are not eligible for this invitation.',
-                  done: false,
-                  code: StatusCode.UnAuthorized
-              });
-          }
-
-          user.fullName = request.fullName;
-          user.email = request.email;
-          user.company = request.company;
-          user.sector = request.sector;
-          user.title = request.title;
-          user.submittedRegistration = true;
-          await user.save();
-
-          return resolve({done: true, code: StatusCode.Ok});
-      } catch (error) {
-        console.log(error);
-        return resolve({done: true, code: StatusCode.InternalServerError});        
+      let user = await User.findOne({ phone: request.phone.trim().toLowerCase() });
+      if (user && user.submittedRegistration) {
+        return resolve({
+          // message: 'Thank you, you already submitted the form',
+          done: false,
+          code: StatusCode.AlreadyExists
+        });
       }
+
+      if (!user) {
+        return resolve({
+          // message: 'Sorry, You are not eligible for this invitation.',
+          done: false,
+          code: StatusCode.UnAuthorized
+        });
+      }
+
+      let match = await PasswordHelper.comparePassword(user.phone, hashedPhone);
+      if (!match) {
+        return resolve({
+          // message: 'Sorry, You are not eligible for this invitation.',
+          done: false,
+          code: StatusCode.UnAuthorized
+        });
+      }
+
+      user.fullName = request.fullName;
+      user.email = request.email;
+      user.company = request.company;
+      user.sector = request.sector;
+      user.title = request.title;
+      user.submittedRegistration = true;
+      await user.save();
+
+      return resolve({ done: true, code: StatusCode.Ok });
+    } catch (error) {
+      console.log(error);
+      return resolve({ done: true, code: StatusCode.InternalServerError });
+    }
   });
 }
 
@@ -104,13 +104,13 @@ app.post('/submit', urlencodedParser, validationRules, async (request, response)
 
       case StatusCode.UnAuthorized:
         return response.render('not-eligible');
-      
+
       case StatusCode.Ok:
         return response.render('success');
 
       case StatusCode.InternalServerError:
         return response.render('some-error');
-    
+
       default:
         return response.render('some-error');
     }

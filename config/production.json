@@ -1,7 +1,7 @@
 {
     "name": "invitations-backend - production",
-    "twillio_sid": "ACb6991b656329d038a36a49af4e4df30b",
-    "twillio_auth_token": "cd25e557fe47a7bc730e9d3590b46e0e",
+    "twillio_sid": "AC12c6f9cf86bc95268993af108973e1cf",
+    "twillio_auth_token": "f6817bced3d5b651d4d2140fd8213d8f",
     "twillio_phone": "+14155238886",
     "port": "3000",
     "host_url": "localhost:500",

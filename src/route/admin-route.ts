@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { AdminController } from "../controller/admin-controller";
+import { StatusCode } from "../enums/request-response-enums";
 import { PasswordHelper } from "../helper/password";
 import { UserTokenHelper } from "../helper/user-token.helper";
 import User from "../model/user";
@@ -17,8 +18,8 @@ const validationRules = [
     check('vertX', '').not().isEmpty(),
 ];
 
-export class AdminRoute extends BaseRoute{
-    
+export class AdminRoute extends BaseRoute {
+
     constructor(
         private router: Router,
         private adminController: AdminController
@@ -26,17 +27,19 @@ export class AdminRoute extends BaseRoute{
         super();
 
         this.router.post('/admin-login', this.adminLogin);
-        
+
         this.router.post('/get-users', UserTokenHelper.validateJWTToken, this.getUsers);
         this.router.post('/get-statistics', UserTokenHelper.validateJWTToken, this.getStatistics);
-        
+
         this.router.post('/send-invitation', UserTokenHelper.validateJWTToken, this.sendInvitation);
         this.router.post('/send-qr-code', UserTokenHelper.validateJWTToken, this.sendQRCode);
 
         this.router.get('/open-form', this.openForm);
-        this.router.get('/open-qr-code', this.openQRCode);
-        
         this.router.post('/submit-form', urlencodedParser, validationRules, this.submitForm);
+        
+        this.router.get('/open-qr-code', this.openQRCode);
+        this.router.post('/confirm-qr-code', UserTokenHelper.validateJWTToken, this.confirmQRCode);
+
     }
 
     public adminLogin = async (request: Request, response: Response) => {
@@ -63,16 +66,16 @@ export class AdminRoute extends BaseRoute{
         try {
             const errors = validationResult(request)
             let body = request.body;
-            console.log('request.bodyXX', request.body);
+            
 
-            if(!errors.isEmpty()) {
+            if (!errors.isEmpty()) {
                 const alert = errors.array();
                 return response.render('form', { alert: alert, reqBody: body, vertX: body.vertX });
-            }else{
+            } else {
                 let result = await this.adminController.submitForm(body);
-                if(result && result.statusCode == 200){
+                if (result && result.statusCode == 200) {
                     return response.render('success');
-                }else{
+                } else {
                     return response.render('some-error');
                 }
             }
@@ -115,15 +118,17 @@ export class AdminRoute extends BaseRoute{
         try {
             let phone: string = request.query['phone'] as string;
             let hashedPhone: string = request.query['vertX'] as string;
-            if(!phone || !hashedPhone){
+            if (!phone || !hashedPhone) {
                 return response.render('invalid-qr');
             }
-            
+
             let user = await User.findOne({ phone: phone.trim().toLowerCase() });
-            if(!user) return response.render('invalid-qr');
+            if (!user) return response.render('invalid-qr');
+            
+            if (user && !user.adminSentQR) return response.render('invalid-qr');
 
             let validUser = await PasswordHelper.comparePassword(user.phone, hashedPhone);
-            if(!validUser) return response.render('invalid-qr');
+            if (!validUser) return response.render('invalid-qr');
 
             var QRCode = require('qrcode');
             let qrData = `${user.phone}*--*${hashedPhone}`;
@@ -142,11 +147,59 @@ export class AdminRoute extends BaseRoute{
     public openForm = async (request: Request, response: Response) => {
         try {
             let hashedPhone: string = request.query['vertX'] as string;
-            if(!hashedPhone){
+            if (!hashedPhone) {
                 return response.render('invalid-form');
             }
 
-            return response.render('form', {vertX: hashedPhone});
+            return response.render('form', { vertX: hashedPhone });
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public confirmQRCode = async (request: Request, response: Response) => {
+        try {
+            let body = request.body;
+            let phone: string = body['phone'] as string;
+            let hashedPhone: string = body['hashedPhone'] as string;
+
+            if (!phone || !hashedPhone) {
+                return response.status(StatusCode.Ok).json({
+                    message: "There's something wrong with your invitaion",
+                    statusCode: StatusCode.NotFound
+                });
+            }
+
+            let user = await User.findOne({ phone: phone.trim().toLowerCase() });
+            if (!user) {
+                return response.status(StatusCode.Ok).json({
+                    message: "There's something wrong with your invitaion",
+                    statusCode: StatusCode.NotFound
+                });
+            }
+
+            let validUser = await PasswordHelper.comparePassword(user.phone, hashedPhone);
+            if (!validUser) {
+                return response.status(StatusCode.Ok).json({
+                    message: "There's something wrong with your invitaion",
+                    statusCode: StatusCode.NotFound
+                });
+            }
+
+            if (user.attendedEvent) {
+                return response.status(StatusCode.Ok).json({
+                    message: "User already confirmed attendance.",
+                    statusCode: StatusCode.AlreadyExists
+                });
+            }
+
+            user.attendedEvent = true;
+            await user.save();
+
+            return response.status(StatusCode.Ok).json({
+                message: "Valid invitation, user confirmed attendance.",
+                statusCode: StatusCode.Ok
+            });
         } catch (error) {
             this.handleError(error, request, response);
         }
