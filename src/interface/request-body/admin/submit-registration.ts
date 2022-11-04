@@ -5,6 +5,5 @@ export interface ISubmitForm{
     company: string;
     sector: string;
     title: string;
-    hashedPhone: string;
-    
+    vartX: string;
 }

@@ -14,6 +14,7 @@ export interface IUser extends Document {
     title: string;
     sector: string;
     submittedRegistration: boolean;
+    adminSentQR: boolean;
     attendedEvent: boolean;
 }
 
@@ -46,6 +47,7 @@ export const AdminSchema: Schema = new Schema<IUser>(
         title: { type: String, trim: true },
         sector: { type: String, trim: true },
         submittedRegistration: { type: Boolean, default: false },
+        adminSentQR: { type: Boolean, default: false },
         attendedEvent: { type: Boolean, default: false },
     }, {
         collection: 'user',

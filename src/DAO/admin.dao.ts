@@ -53,6 +53,18 @@ export class AdminDao {
         });
     }
 
+    public getUserById(id: string): Promise<IUser> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let item = await User.findOne({ _id: new mongoose.Types.ObjectId(id.trim().toLowerCase()) });
+
+                resolve(item);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
     public getAdmins(pageIndex: number = 0, pageSize: number = 10): Promise<{items: IAdmin[], count: number}> {
         return new Promise(async (resolve, reject) => {
             try {
@@ -88,6 +100,37 @@ export class AdminDao {
                 let item = await User.findOne({ registeredPhone: submittedPhone.trim().toLowerCase() });
 
                 resolve(item);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    public getUsers(pageIndex: number = 0, pageSize: number = 10): Promise<{items: IUser[], count: number}> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let items = await User.find()
+                .sort({createdAt: -1})
+                .skip(pageIndex * pageSize)
+                .limit(pageSize);
+
+                let count = await User.countDocuments();
+
+                resolve({items, count});
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    public getStatistics(): Promise<{totalRegistrations: number, qrsSent: number, totalAttendents: number}> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let totalRegistrations = await User.countDocuments({ submittedRegistration: true });
+                let qrsSent = await User.countDocuments({ adminSentQR: true });
+                let totalAttendents = await User.countDocuments({ attendedEvent: true });
+
+                resolve({totalRegistrations, qrsSent, totalAttendents});
             } catch (error) {
                 reject(error);
             }

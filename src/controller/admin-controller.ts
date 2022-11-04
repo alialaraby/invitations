@@ -3,7 +3,9 @@ import { StatusCode } from "../enums/request-response-enums";
 import { PasswordHelper } from "../helper/password";
 import { UserTokenHelper } from "../helper/user-token.helper";
 import { IAdminLogin } from "../interface/request-body/admin/admin-login";
+import { IGetByPageIndexAndSize } from "../interface/request-body/admin/get-with-page-index-size";
 import { ISendInvitation } from "../interface/request-body/admin/send-invitation";
+import { ISendQRCode } from "../interface/request-body/admin/send-qr-code";
 import { ISubmitForm } from "../interface/request-body/admin/submit-registration";
 import { IResponseBody } from "../interface/response-body";
 import { IUserPayload } from "../interface/user-payload";
@@ -55,18 +57,23 @@ export class AdminController {
 
                 let phones = request.phones;
                 for (let i = 0; i < phones.length; i++) {
-                    let exists = await this.adminDao.getUserByPhone(phones[i]);
-                    if(!exists){
-                        let hashedPhone = await PasswordHelper.hashPassword(phones[i]);
+                    try {
+                        let exists = await this.adminDao.getUserByPhone(phones[i]);
+                        if(!exists){
+                            let hashedPhone = await PasswordHelper.hashPassword(phones[i]);
+                            
+                            // await Twillio.sendInvitationLink(phones[i], `${request.invitationLink}?${hashedPhone}`);
+                            await Twillio.sendInvitationLink(phones[i], hashedPhone);
 
-                        let addedUser = new User();
-                        addedUser.phone = phones[i];
-                        addedUser.invitationLink = request.invitationLink;
-                        addedUser.hashedPhone = hashedPhone;
-                        await addedUser.save();
-        
-                        // await Twillio.sendInvitationLink(phones[i], `${request.invitationLink}?${hashedPhone}`);
-                        await Twillio.sendInvitationLink(phones[i], hashedPhone);
+                            let addedUser = new User();
+                            addedUser.phone = phones[i];
+                            addedUser.invitationLink = request.invitationLink;
+                            addedUser.hashedPhone = hashedPhone;
+                            await addedUser.save();
+            
+                        }
+                    } catch (error) {
+                        console.log(error);
                     }
                 }
 
@@ -83,6 +90,8 @@ export class AdminController {
     public submitForm(request: ISubmitForm): Promise<IResponseBody> {
         return new Promise(async (resolve, reject) => {
             try {
+                let hashedPhone = request.vartX;
+
                 let user = await this.adminDao.getUserByPhone(request.phone);
                 if(user && user.submittedRegistration){
                     return resolve({
@@ -98,7 +107,7 @@ export class AdminController {
                     });
                 }
 
-                let match = await PasswordHelper.comparePassword(user.phone, request.hashedPhone);
+                let match = await PasswordHelper.comparePassword(user.phone, hashedPhone);
                 if(!match){
                     return resolve({
                         message: 'Sorry, You are not eligible for this invitation.',
@@ -119,8 +128,90 @@ export class AdminController {
                     statusCode: StatusCode.Ok
                 });
             } catch (error) {
+                reject(error)
+            }
+        });
+    }
+
+    public getUsers(request: IGetByPageIndexAndSize): Promise<IResponseBody> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let result = await this.adminDao.getUsers(request.pageIndex, request.pageSize);
+
+                return resolve({
+                    message: 'Done',
+                    statusCode: StatusCode.Ok,
+                    items: result.items,
+                    count: result.count
+                });
+            } catch (error) {
+                reject(error)
+            }
+        });
+    }
+
+    public sendQRCode(request: ISendQRCode): Promise<IResponseBody> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let user = await this.adminDao.getUserById(request.itemId);
+                if(!user){
+                    return resolve({
+                        message: 'User not found',
+                        statusCode: StatusCode.NotFound
+                    });
+                }
+
+                await Twillio.sendQRLink(user.phone, user.hashedPhone);
+
+                user.adminSentQR = true;
+                await user.save();
+
+                return resolve({
+                    message: 'Done',
+                    statusCode: StatusCode.Ok
+                });
+            } catch (error) {
                 console.log(error);
                 
+                reject(error)
+            }
+        });
+    }
+
+    public getStatistics(request: any): Promise<IResponseBody> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let result = await this.adminDao.getStatistics();
+
+                return resolve({
+                    message: 'Done',
+                    statusCode: StatusCode.Ok,
+                    totalRegistrations: result.totalRegistrations,
+                    qrsSent: result.qrsSent,
+                    totalAttendents: result.totalAttendents,
+                });
+            } catch (error) {
+                reject(error)
+            }
+        });
+    }
+
+    public openQRCode(request: any): Promise<IResponseBody> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let data = {
+                    name: 'a', phone: '010'
+                }
+                var QRCode = require('qrcode')
+                QRCode.toDataURL('I am a pony!', function (err, url) {
+                    console.log('urlXXX', url);
+                });
+                
+                return resolve({
+                    message: 'Done',
+                    statusCode: StatusCode.Ok
+                });
+            } catch (error) {
                 reject(error)
             }
         });

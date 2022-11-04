@@ -8,4 +8,8 @@ export interface IResponseBody{
     OTP?: string;
     iFrame?: string;
     invalidMembers?: any[];
+    totalRegistrations?: number;
+    qrsSent?: number;
+    totalAttendents?: number;
+
 }
