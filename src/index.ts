@@ -83,7 +83,6 @@ function submitForm(request: any): Promise<{ done: boolean, code: any }> {
 
       return resolve({ done: true, code: StatusCode.Ok });
     } catch (error) {
-      console.log(error);
       return resolve({ done: true, code: StatusCode.InternalServerError });
     }
   });
@@ -97,7 +96,6 @@ app.post('/submit', urlencodedParser, validationRules, async (request, response)
     return response.render('form', { alert: alert, reqBody: body, vertX: body.vertX });
   } else {
     let result = await submitForm(body);
-    console.log('resultXX', result);
     switch (result.code) {
       case StatusCode.AlreadyExists:
         return response.render('already-submitted');

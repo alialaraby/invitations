@@ -173,8 +173,6 @@ export class AdminController {
                     statusCode: StatusCode.Ok
                 });
             } catch (error) {
-                console.log(error);
-                
                 reject(error)
             }
         });
