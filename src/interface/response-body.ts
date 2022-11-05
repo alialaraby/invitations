@@ -11,5 +11,6 @@ export interface IResponseBody{
     totalRegistrations?: number;
     qrsSent?: number;
     totalAttendents?: number;
-
+    erroredNumbers?: string[];
+    numbersAlreadySent?: string[];
 }

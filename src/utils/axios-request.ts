@@ -4,67 +4,89 @@ import { IPaymentKeyResponse } from "../interface/paymob-response/payment-key-re
 import { Constants } from "../model/constant";
 
 const axios = require('axios').default;
+const Version = 'v15.0';
+// const PhoneNumberId = '100878516177623';// test
+const PhoneNumberId = '101900492740832';// live
+const Token = 'EAAWsnSTLGKQBAAafhdJcUPrVMeMaDkoZC9ThKLjdOY6VkI9GQZCsUgt5usbOkcPLPen4vyBnZBPW7dRLVK0pECuTCltabGqvHNJslDOkNTswcALaX8WgyE6qVnPVor0x4NYVVPiIVDiGO1oB0ZBI5WEqxao1ki78HVlGZAPrcnhmi9UurfsJdp8ceHiCshFOCZAfyF7oJHZCAZDZD';
 
 export class AxiosRequest {
 
-    public static sendInvitationLink(phone: string, message: string): Promise<any> {
+    public static sendInvitationLink(phone: string, message: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
-
-            const Version = 'v15.0';
-            const PhoneNumberId = '100878516177623';
-            const Token = 'EAAWsnSTLGKQBABZCqwgAzwxQzbOnU6IYLO6KB7ZA3kmxWQPXt54ZBZAyznur9DikIbSXwe2xQZBthm3K3tzaZARZCJw3mLU8yGHz23vblG7TPfC7BZC4QpIKjil523SZBXUJXjRlIYTeCyhKgAmb0zu4VhRkL7JHthTbx6ZCmUdiM3vzHwIQHvT7Q9QuNCpGMBw72jSBe6noqZAom2ZApFc5mbJxrCieKxtqFXIZD';
 
             const config = {
                 headers: { Authorization: `Bearer ${Token}` }
             };
 
             axios.post(`https://graph.facebook.com/${Version}/${PhoneNumberId}/messages`,
-                {
-                    "messaging_product": "whatsapp",
-                    "to": `2${phone}`,
-                    "text": {
-                        "preview_url": true,
-                        "body": `Details: h-ttp://143.198.148.87:82/api/open-form?vertX=${message}`
+                { 
+                    "messaging_product": "whatsapp", 
+                    "recipient_type": "individual",
+                    "to": `2${phone}`, 
+                    "type": "template", 
+                    "template": {
+                        "name": "invitation_url",
+                        "language": {
+                            "code": "en",
+                        },
+                        "components": [{
+                            "type": "body",
+                            "parameters": [
+                                {
+                                    "type": "text",
+                                    "text": `https://api.events.shiragroup.com/api/open-form?vertX=${message}`
+                                }
+                            ]
+                        }]
                     }
                 },
                 config
             )
                 .then(function (response: any) {
-                    resolve(response);
+                    resolve(true);
                 })
                 .catch(function (error) {
-                    reject(error);
+                    resolve(false);
                 });
         })
     }
 
-    public static sendQRLink(phone: string, message: string): Promise<any> {
+    public static sendQRLink(phone: string, message: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
-
-            const Version = 'v15.0';
-            const PhoneNumberId = '100878516177623';
-            const Token = 'EAAWsnSTLGKQBABZCqwgAzwxQzbOnU6IYLO6KB7ZA3kmxWQPXt54ZBZAyznur9DikIbSXwe2xQZBthm3K3tzaZARZCJw3mLU8yGHz23vblG7TPfC7BZC4QpIKjil523SZBXUJXjRlIYTeCyhKgAmb0zu4VhRkL7JHthTbx6ZCmUdiM3vzHwIQHvT7Q9QuNCpGMBw72jSBe6noqZAom2ZApFc5mbJxrCieKxtqFXIZD';
 
             const config = {
                 headers: { Authorization: `Bearer ${Token}` }
             };
 
             axios.post(`https://graph.facebook.com/${Version}/${PhoneNumberId}/messages`,
-                {
-                    "messaging_product": "whatsapp",
-                    "to": `2${phone}`,
-                    "text": {
-                        "preview_url": true,
-                        "body": `Details: h-ttp://143.198.148.87:82/api/open-qr-code?phone=${phone}&vertX=${message}`
+                { 
+                    "messaging_product": "whatsapp", 
+                    "recipient_type": "individual",
+                    "to": `2${phone}`, 
+                    "type": "template", 
+                    "template": {
+                        "name": "invitation_url",
+                        "language": {
+                            "code": "en",
+                        },
+                        "components": [{
+                            "type": "body",
+                            "parameters": [
+                                {
+                                    "type": "text",
+                                    "text": `https://api.events.shiragroup.com/api/open-qr-code?phone=${phone}&vertX=${message}`
+                                }
+                            ]
+                        }]
                     }
                 },
                 config
             )
                 .then(function (response: any) {
-                    resolve(response);
+                    resolve(true);
                 })
                 .catch(function (error) {
-                    reject(error);
+                    resolve(false);
                 });
         })
     }

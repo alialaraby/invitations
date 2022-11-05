@@ -56,32 +56,42 @@ export class AdminController {
         return new Promise(async (resolve, reject) => {
             try {
 
+                let erroredNumbers: string[] = [];
+                let numbersAlreadySent: string[] = [];
                 let phones = request.phones;
                 for (let i = 0; i < phones.length; i++) {
-                    try {
-                        let exists = await this.adminDao.getUserByPhone(phones[i]);
-                        if(!exists){
-                            let hashedPhone = await PasswordHelper.hashPassword(phones[i]);
-                            
-                            // await Twillio.sendInvitationLink(phones[i], `${request.invitationLink}?${hashedPhone}`);
-                            await Twillio.sendInvitationLink(phones[i], hashedPhone);
-                            await AxiosRequest.sendInvitationLink(phones[i], hashedPhone);
-
-                            let addedUser = new User();
-                            addedUser.phone = phones[i];
-                            addedUser.invitationLink = request.invitationLink;
-                            addedUser.hashedPhone = hashedPhone;
-                            await addedUser.save();
-            
+                    if(phones[i] && phones[i].trim().length > 0){
+                        try {
+                            let exists = await this.adminDao.getUserByPhone(phones[i]);
+                            if(!exists){
+                                let hashedPhone = await PasswordHelper.hashPassword(phones[i]);
+                                
+                                // await Twillio.sendInvitationLink(phones[i], `${request.invitationLink}?${hashedPhone}`);
+                                // await Twillio.sendInvitationLink(phones[i], hashedPhone);
+                                let sent = await AxiosRequest.sendInvitationLink(phones[i], hashedPhone);
+                                if(!sent){
+                                    erroredNumbers.push(phones[i]);
+                                }else{
+                                    let addedUser = new User();
+                                    addedUser.phone = phones[i];
+                                    addedUser.invitationLink = request.invitationLink;
+                                    addedUser.hashedPhone = hashedPhone;
+                                    await addedUser.save();
+                                }
+                            }else{
+                                numbersAlreadySent.push(phones[i]);
+                            }
+                        } catch (error) {
+                            console.log(error);
                         }
-                    } catch (error) {
-                        console.log(error);
                     }
                 }
 
                 return resolve({
                     message: 'Done',
-                    statusCode: StatusCode.Ok
+                    statusCode: StatusCode.Ok,
+                    erroredNumbers: erroredNumbers,
+                    numbersAlreadySent: numbersAlreadySent,
                 });
             } catch (error) {
                 reject(error)
@@ -163,16 +173,23 @@ export class AdminController {
                     });
                 }
 
-                await Twillio.sendQRLink(user.phone, user.hashedPhone);
-                await AxiosRequest.sendQRLink(user.phone, user.hashedPhone);
+                // await Twillio.sendQRLink(user.phone, user.hashedPhone);
+                let sent = await AxiosRequest.sendQRLink(user.phone, user.hashedPhone);
+                if(sent){
+                    user.adminSentQR = true;
+                    await user.save();
+                    
+                    return resolve({
+                        message: 'Done',
+                        statusCode: StatusCode.Ok
+                    });
+                }else{
+                    return resolve({
+                        message: 'Axios Whattsapp api error, something went wrong sending qr code',
+                        statusCode: StatusCode.NotFound
+                    });
+                }
 
-                user.adminSentQR = true;
-                await user.save();
-
-                return resolve({
-                    message: 'Done',
-                    statusCode: StatusCode.Ok
-                });
             } catch (error) {
                 reject(error)
             }
