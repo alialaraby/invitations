@@ -25,16 +25,18 @@ export class AxiosRequest {
                     "to": `2${phone}`, 
                     "type": "template", 
                     "template": {
-                        "name": "invitation_url",
+                        "name": "invitation_template",
                         "language": {
-                            "code": "en",
-                        },
+                            "code": "en"
+                        }, 
                         "components": [{
-                            "type": "body",
+                            "type": "button",
+                            "sub_type": "url",
+                            "index": 0,
                             "parameters": [
                                 {
-                                    "type": "text",
-                                    "text": `https://api.events.shiragroup.com/api/open-form?vertX=${message}`
+                                    "type": "payload",
+                                    "payload": `open-form?vertX=${message}`
                                 }
                             ]
                         }]
@@ -65,16 +67,18 @@ export class AxiosRequest {
                     "to": `2${phone}`, 
                     "type": "template", 
                     "template": {
-                        "name": "invitation_url",
+                        "name": "invitation_template",
                         "language": {
-                            "code": "en",
-                        },
+                            "code": "en"
+                        }, 
                         "components": [{
-                            "type": "body",
+                            "type": "button",
+                            "sub_type": "url",
+                            "index": 0,
                             "parameters": [
                                 {
-                                    "type": "text",
-                                    "text": `https://api.events.shiragroup.com/api/open-qr-code?phone=${phone}&vertX=${message}`
+                                    "type": "payload",
+                                    "payload": `open-qr-code?phone=${phone}&vertX=${message}`
                                 }
                             ]
                         }]
