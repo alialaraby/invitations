@@ -17,7 +17,7 @@ const validationRules = [
   check('phone', 'Phone is required').not().isEmpty().trim(),
   check('email', 'Email is required').not().isEmpty().trim(),
   check('company', 'Company is required').not().isEmpty().trim(),
-  check('sector', 'Sector is required').not().isEmpty().trim(),
+  check('sector', 'Business Category is required').not().isEmpty().trim(),
   check('title', 'Title is required').not().isEmpty().trim(),
   check('vertX', '').not().isEmpty(),
 ];

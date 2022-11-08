@@ -29,9 +29,12 @@ export class AdminRoute extends BaseRoute {
         this.router.post('/admin-login', this.adminLogin);
 
         this.router.post('/get-users', UserTokenHelper.validateJWTToken, this.getUsers);
+        this.router.post('/get-admins', UserTokenHelper.validateJWTToken, this.getAdmins);
+        this.router.post('/reset-admin-password', UserTokenHelper.validateJWTToken, this.resetAdminPassword);
         this.router.post('/get-statistics', UserTokenHelper.validateJWTToken, this.getStatistics);
 
         this.router.post('/send-invitation', UserTokenHelper.validateJWTToken, this.sendInvitation);
+        this.router.post('/send-invitation-vip', UserTokenHelper.validateJWTToken, this.sendInvitationVip);
         this.router.post('/send-qr-code', UserTokenHelper.validateJWTToken, this.sendQRCode);
 
         this.router.get('/open-form', this.openForm);
@@ -56,6 +59,16 @@ export class AdminRoute extends BaseRoute {
         try {
             let body = request.body;
             let returnedResponse = await this.adminController.sendInvitationLink(body);
+            response.status(returnedResponse.statusCode).json(returnedResponse);
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public sendInvitationVip = async (request: Request, response: Response) => {
+        try {
+            let body = request.body;
+            let returnedResponse = await this.adminController.sendInvitationVip(body);
             response.status(returnedResponse.statusCode).json(returnedResponse);
         } catch (error) {
             this.handleError(error, request, response);
@@ -88,6 +101,26 @@ export class AdminRoute extends BaseRoute {
         try {
             let body = request.body;
             let returnedResponse = await this.adminController.getUsers(body);
+            response.status(returnedResponse.statusCode).json(returnedResponse);
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public getAdmins = async (request: Request, response: Response) => {
+        try {
+            let body = request.body;
+            let returnedResponse = await this.adminController.getAdmins(body);
+            response.status(returnedResponse.statusCode).json(returnedResponse);
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public resetAdminPassword = async (request: Request, response: Response) => {
+        try {
+            let body = request.body;
+            let returnedResponse = await this.adminController.resetAdminPassword(body);
             response.status(returnedResponse.statusCode).json(returnedResponse);
         } catch (error) {
             this.handleError(error, request, response);

@@ -2,6 +2,7 @@ export interface IResponseBody{
     message: string;
     statusCode: number;
     items?: any[];
+    admins?: any[];
     item?: any;
     count?: number;
     acceccToken?: string;
