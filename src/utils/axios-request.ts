@@ -25,7 +25,7 @@ export class AxiosRequest {
                     "to": `2${phone}`, 
                     "type": "template", 
                     "template": {
-                        "name": "invitation_template",
+                        "name": "invitation_template2",
                         "language": {
                             "code": "en"
                         }, 
@@ -67,7 +67,7 @@ export class AxiosRequest {
                     "to": `2${phone}`, 
                     "type": "template", 
                     "template": {
-                        "name": "invitation_template",
+                        "name": "invitation_qr2",
                         "language": {
                             "code": "en"
                         }, 
