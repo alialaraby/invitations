@@ -43,7 +43,7 @@ export class AdminRoute extends BaseRoute {
         this.router.get('/open-qr-code', this.openQRCode);
         this.router.post('/confirm-qr-code', this.confirmQRCode);
 
-        this.router.post('/export', this.confirmQRCode);
+        this.router.post('/export', this.exportExcell);
 
     }
 
@@ -262,16 +262,34 @@ export class AdminRoute extends BaseRoute {
                 users = await User.find({})
             }
 
+            console.log(users.length);
+            const path = "./files";
+
             const workbook = new excelJS.Workbook();
             const worksheet = workbook.addWorksheet("Users");
-            const path = "./files";
-            users.forEach((user) => {
-                worksheet.addRow(user);
-            });
+            worksheet.addRow(['Phone', 'Full name', 'Email', 'Company', 'Title', 'Business Category', 'TitleRegistered', 'QR Sent', 'Attended Event', 'Vip']);
+
+            for (let i = 0; i < users.length; i++) {                
+                worksheet.addRow([
+                    users[i].phone,
+                    users[i].fullName,
+                    users[i].email,
+                    users[i].company,
+                    users[i].title,
+                    users[i].sector,
+                    users[i].submittedRegistration,
+                    users[i].adminSentQR,
+                    users[i].attendedEvent,
+                    users[i].isVip,
+                ]);
+            }
             
-            return response.status(StatusCode.Ok).json({
-                message: "Valid invitation, user confirmed attendance.",
-                statusCode: StatusCode.Ok
+            let url = `${path}/Users_${type}.xlsx`;
+            const data = await workbook.xlsx.writeFile(url);
+
+            return response.status(200).send({
+                message: "exported",
+                item: url,
             });
         } catch (error) {
             this.handleError(error, request, response);
