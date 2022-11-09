@@ -7,7 +7,7 @@ import { RouteSetup } from './startup/route';
 import path from 'path';
 import { StatusCode } from './enums/request-response-enums';
 import { PasswordHelper } from './helper/password';
-import User from './model/user';
+import User, { IUser } from './model/user';
 
 const { check, validationResult } = require('express-validator');
 const bodyParser = require('body-parser');
@@ -26,6 +26,8 @@ const debug = require('debug')('app:all'); // condotional log, choose to show th
 const app = express();
 const router = express.Router();
 
+app.use('/ftp', express.static(path.join(__dirname, 'files')));
+app.use(express.static(path.join(__dirname, 'files')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -114,3 +116,57 @@ app.post('/submit', urlencodedParser, validationRules, async (request, response)
     }
   }
 });
+
+// app.post('/api/export', urlencodedParser, async (request, response) => {
+  
+//   const excelJS = require("exceljs");
+
+//   let body = request.body;
+//   let type = body.type;
+
+//   let users: IUser[] = [];
+//   if(type == 'sentRegistration'){
+//     users = await User.find({ $and: [{ submittedRegistration: false, adminSentQR: false, attendedEvent: false }] })
+//   }else if(type == 'registered'){
+//     users = await User.find({ $and: [{ submittedRegistration: true }] })
+//   }else if(type == 'sentQr'){
+//     users = await User.find({ $and: [{ adminSentQR: true }] })
+//   }else if(type == 'attendedEvent'){
+//     users = await User.find({ $and: [{ attendedEvent: true }] })
+//   }else if(type == 'vip'){
+//     users = await User.find({ $and: [{ isVip: true }] })
+//   }else{
+//     users = await User.find({})
+//   }
+
+//   console.log(users.length);
+//   const path = "./files";
+
+//   const workbook = new excelJS.Workbook();
+//   const worksheet = workbook.addWorksheet("Users");
+//   worksheet.addRow(['Phone', 'Full name', 'Email', 'Company', 'Title', 'Business Category', 'TitleRegistered', 'QR Sent', 'Attended Event', 'Vip']);
+
+//   for (let i = 0; i < users.length; i++) {                
+//     worksheet.addRow([
+//       users[i].phone,
+//       users[i].fullName,
+//       users[i].email,
+//       users[i].company,
+//       users[i].title,
+//       users[i].sector,
+//       users[i].submittedRegistration,
+//       users[i].adminSentQR,
+//       users[i].attendedEvent,
+//       users[i].isVip,
+//     ]);
+//   }
+  
+//   let url = `./public/Users_${type}.xlsx`;
+//   const data = await workbook.xlsx.writeFile(url);
+
+//   return response.status(200).send({
+//       message: "exported",
+//       item: `https://api.events.shiragroup.com/Users_${type}.xlsx`,
+//   });
+
+// });

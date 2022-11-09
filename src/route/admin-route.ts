@@ -7,6 +7,7 @@ import User, { IUser } from "../model/user";
 import { BaseRoute } from "./base-route";
 const { check, validationResult } = require('express-validator');
 const bodyParser = require('body-parser');
+import path from 'path';
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const validationRules = [
     check('fullName', 'Full name is required').not().isEmpty().trim(),
@@ -263,7 +264,7 @@ export class AdminRoute extends BaseRoute {
             }
 
             console.log(users.length);
-            const path = "./files";
+            const filePath = path.join(__dirname, 'files');
 
             const workbook = new excelJS.Workbook();
             const worksheet = workbook.addWorksheet("Users");
@@ -284,14 +285,16 @@ export class AdminRoute extends BaseRoute {
                 ]);
             }
             
-            let url = `${path}/Users_${type}.xlsx`;
+            let url = `/root/invitations/dist/files/Users_${type}.xlsx`;
             const data = await workbook.xlsx.writeFile(url);
 
             return response.status(200).send({
                 message: "exported",
-                item: url,
+                item: `https://api.events.shiragroup.com/Users_${type}.xlsx`,
             });
         } catch (error) {
+            console.log(error);
+            
             this.handleError(error, request, response);
         }
     }
