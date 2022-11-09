@@ -16,6 +16,7 @@ export interface IUser extends Document {
     submittedRegistration: boolean;
     adminSentQR: boolean;
     attendedEvent: boolean;
+    isVip: boolean;
 }
 
 export const AdminSchema: Schema = new Schema<IUser>(
@@ -49,6 +50,7 @@ export const AdminSchema: Schema = new Schema<IUser>(
         submittedRegistration: { type: Boolean, default: false },
         adminSentQR: { type: Boolean, default: false },
         attendedEvent: { type: Boolean, default: false },
+        isVip: { type: Boolean, default: false },
     }, {
         collection: 'user',
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }

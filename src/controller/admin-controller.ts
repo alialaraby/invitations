@@ -135,7 +135,8 @@ export class AdminController {
                             }
                             
                         }else{
-                            numbersAlreadySent.push(users[i].phone);
+                            let hashedPhone = await PasswordHelper.hashPassword(exists.phone);
+                            await AxiosRequest.sendQRLink(exists.phone, hashedPhone);
                         }
                     } catch (error) {
                         console.log(error);

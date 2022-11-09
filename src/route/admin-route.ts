@@ -3,7 +3,7 @@ import { AdminController } from "../controller/admin-controller";
 import { StatusCode } from "../enums/request-response-enums";
 import { PasswordHelper } from "../helper/password";
 import { UserTokenHelper } from "../helper/user-token.helper";
-import User from "../model/user";
+import User, { IUser } from "../model/user";
 import { BaseRoute } from "./base-route";
 const { check, validationResult } = require('express-validator');
 const bodyParser = require('body-parser');
@@ -28,20 +28,22 @@ export class AdminRoute extends BaseRoute {
 
         this.router.post('/admin-login', this.adminLogin);
 
-        this.router.post('/get-users', UserTokenHelper.validateJWTToken, this.getUsers);
-        this.router.post('/get-admins', UserTokenHelper.validateJWTToken, this.getAdmins);
-        this.router.post('/reset-admin-password', UserTokenHelper.validateJWTToken, this.resetAdminPassword);
-        this.router.post('/get-statistics', UserTokenHelper.validateJWTToken, this.getStatistics);
+        this.router.post('/get-users', this.getUsers);
+        this.router.post('/get-admins', this.getAdmins);
+        this.router.post('/reset-admin-password', this.resetAdminPassword);
+        this.router.post('/get-statistics', this.getStatistics);
 
-        this.router.post('/send-invitation', UserTokenHelper.validateJWTToken, this.sendInvitation);
-        this.router.post('/send-invitation-vip', UserTokenHelper.validateJWTToken, this.sendInvitationVip);
-        this.router.post('/send-qr-code', UserTokenHelper.validateJWTToken, this.sendQRCode);
+        this.router.post('/send-invitation', this.sendInvitation);
+        this.router.post('/send-invitation-vip', this.sendInvitationVip);
+        this.router.post('/send-qr-code', this.sendQRCode);
 
         this.router.get('/open-form', this.openForm);
         this.router.post('/submit-form', urlencodedParser, validationRules, this.submitForm);
         
         this.router.get('/open-qr-code', this.openQRCode);
-        this.router.post('/confirm-qr-code', UserTokenHelper.validateJWTToken, this.confirmQRCode);
+        this.router.post('/confirm-qr-code', this.confirmQRCode);
+
+        this.router.post('/export', this.confirmQRCode);
 
     }
 
@@ -229,6 +231,44 @@ export class AdminRoute extends BaseRoute {
             user.attendedEvent = true;
             await user.save();
 
+            return response.status(StatusCode.Ok).json({
+                message: "Valid invitation, user confirmed attendance.",
+                statusCode: StatusCode.Ok
+            });
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public exportExcell = async (request: Request, response: Response) => {
+        try {
+            const excelJS = require("exceljs");
+
+            let body = request.body;
+            let type = body.type;
+
+            let users: IUser[] = [];
+            if(type == 'sentRegistration'){
+                users = await User.find({ $and: [{ submittedRegistration: false, adminSentQR: false, attendedEvent: false }] })
+            }else if(type == 'registered'){
+                users = await User.find({ $and: [{ submittedRegistration: true }] })
+            }else if(type == 'sentQr'){
+                users = await User.find({ $and: [{ adminSentQR: true }] })
+            }else if(type == 'attendedEvent'){
+                users = await User.find({ $and: [{ attendedEvent: true }] })
+            }else if(type == 'vip'){
+                users = await User.find({ $and: [{ isVip: true }] })
+            }else{
+                users = await User.find({})
+            }
+
+            const workbook = new excelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Users");
+            const path = "./files";
+            users.forEach((user) => {
+                worksheet.addRow(user);
+            });
+            
             return response.status(StatusCode.Ok).json({
                 message: "Valid invitation, user confirmed attendance.",
                 statusCode: StatusCode.Ok
