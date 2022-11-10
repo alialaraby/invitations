@@ -22,6 +22,15 @@ const validationRules = [
   check('vertX', '').not().isEmpty(),
 ];
 
+const validationRulesManual = [
+  check('fullName', 'Full name is required').not().isEmpty().trim(),
+  check('phone', 'Phone is required').not().isEmpty().trim(),
+  check('email', 'Email is required').not().isEmpty().trim(),
+  check('company', 'Company is required').not().isEmpty().trim(),
+  check('sector', 'Business Category is required').not().isEmpty().trim(),
+  check('title', 'Title is required').not().isEmpty().trim(),
+];
+
 const debug = require('debug')('app:all'); // condotional log, choose to show these log or not from env
 const app = express();
 const router = express.Router();
@@ -77,7 +86,7 @@ function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
   });
 }
 
-app.post('/submit-manual', urlencodedParser, validationRules, async (request, response) => {
+app.post('/submit-manual', urlencodedParser, validationRulesManual, async (request, response) => {
   const errors = validationResult(request)
   let body = request.body;
   if (!errors.isEmpty()) {
