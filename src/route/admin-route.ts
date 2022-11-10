@@ -39,6 +39,7 @@ export class AdminRoute extends BaseRoute {
         this.router.post('/send-qr-code', this.sendQRCode);
 
         this.router.get('/open-form', this.openForm);
+        this.router.get('/open-form-m', this.openFormManual);
         this.router.post('/submit-form', urlencodedParser, validationRules, this.submitForm);
         
         this.router.get('/open-qr-code', this.openQRCode);
@@ -188,6 +189,14 @@ export class AdminRoute extends BaseRoute {
             }
 
             return response.render('form', { vertX: hashedPhone });
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public openFormManual = async (request: Request, response: Response) => {
+        try {
+            return response.render('form-manual');
         } catch (error) {
             this.handleError(error, request, response);
         }
