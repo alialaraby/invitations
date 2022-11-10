@@ -44,6 +44,67 @@ app.get('/', (req, res) => {
   res.send('Hi There!');
 });
 
+function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await User.findOne({ phone: request.phone.trim().toLowerCase() });
+      if (user && user.submittedRegistration) {
+        return resolve({
+          done: false,
+          code: StatusCode.AlreadyExists
+        });
+      }
+
+      if (!user) {
+        return resolve({
+          done: false,
+          code: StatusCode.UnAuthorized
+        });
+      }
+
+      user.fullName = request.fullName;
+      user.email = request.email;
+      user.company = request.company;
+      user.sector = request.sector;
+      user.title = request.title;
+      user.submittedRegistration = true;
+      await user.save();
+
+      return resolve({ done: true, code: StatusCode.Ok });
+    } catch (error) {
+      return resolve({ done: true, code: StatusCode.InternalServerError });
+    }
+  });
+}
+
+app.post('/submit-manual', urlencodedParser, validationRules, async (request, response) => {
+  const errors = validationResult(request)
+  let body = request.body;
+  if (!errors.isEmpty()) {
+    const alert = errors.array();
+    return response.render('form', { alert: alert, reqBody: body, vertX: body.vertX });
+  } else {
+    let result = await submitFormManual(body);
+    switch (result.code) {
+      case StatusCode.AlreadyExists:
+        return response.render('already-submitted');
+
+      case StatusCode.UnAuthorized:
+        return response.render('not-eligible');
+
+      case StatusCode.Ok:
+        return response.render('success');
+
+      case StatusCode.InternalServerError:
+        return response.render('some-error');
+
+      default:
+        return response.render('some-error');
+    }
+  }
+});
+
+
 function submitForm(request: any): Promise<{ done: boolean, code: any }> {
   return new Promise(async (resolve, reject) => {
     try {
