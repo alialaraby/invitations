@@ -43,17 +43,32 @@
     color: #ff002c !important;
 
 }
+.form-control{
+    text-align: end !important;
+}
+.btn-primary{
+    background-color: #8DC63F;
+    border-color: #8DC63F;
+}
+.btn-primary:active{
+    background-color: #8DC63F;
+    border-color: #8DC63F;
+}
+.btn-primary:focus{
+    background-color: #8DC63F;
+    border-color: #8DC63F;
+}
     </style>
 </head>
 <body style="background: #8DC63F;">
     <div class="container register-form">
         <div class="form">
           <div>
-            <img style="    width: 100%; margin-bottom: 20px;" src="https://api.events.shiragroup.com/form-header.png"> </img>
+            <img style="    width: 100%; margin-bottom: 20px;" src="https://api.events.shiragroup.com/form-header.jpg"> </img>
           </div>
-            <div class="note">
+            <!-- <div class="note">
                 <p>Fill in the following fields.</p>
-            </div>
+            </div> -->
 
             <div class="form-content">
                 <div class="row">
@@ -71,36 +86,36 @@
                         <div class="form-group mb-3">
                             <label for="fullName" class="form-label text-capitalize">full name<span class="text-danger font-weight-bold">*</span></label>
                             <% if(typeof reqBody != 'undefined' && typeof reqBody.fullName != 'undefined'){ %>
-                                <input type="text" value="<%= reqBody.fullName %>" class="form-control" name="fullName" id="fullName" placeholder="Full name">
+                                <input type="text" value="<%= reqBody.fullName %>" class="form-control" name="fullName" id="fullName" placeholder="الإسم بالكامل">
                               <% } else{ %>  
-                                <input type="text" class="form-control" name="fullName" id="fullName" placeholder="Full name">
+                                <input type="text" class="form-control" name="fullName" id="fullName" placeholder="الإسم بالكامل">
                             <% } %>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="phone" class="form-label text-capitalize">phone<span class="text-danger font-weight-bold">*</span></label>
                             <% if(typeof reqBody != 'undefined' && typeof reqBody.phone != 'undefined'){ %>
-                                <input type="tel" value="<%= reqBody.phone %>" class="form-control" name="phone" id="phone" placeholder="Phone">
+                                <input type="tel" value="<%= reqBody.phone %>" class="form-control" name="phone" id="phone" placeholder="رقم الهاتف">
                               <% } else{ %>  
-                                <input type="tel" class="form-control" name="phone" id="phone" placeholder="Phone">
+                                <input type="tel" class="form-control" name="phone" id="phone" placeholder="رقم الهاتف">
                             <% } %>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="email" class="form-label text-capitalize">email<span class="text-danger font-weight-bold">*</span></label>
                             <% if(typeof reqBody != 'undefined' && typeof reqBody.email != 'undefined'){ %>
-                                <input type="email" value="<%= reqBody.email %>" class="form-control" name="email" id="email" placeholder="Email">
+                                <input type="email" value="<%= reqBody.email %>" class="form-control" name="email" id="email" placeholder="البريد الإلكترونى">
                               <% } else{ %>  
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                <input type="email" class="form-control" name="email" id="email" placeholder="البريد الإلكترونى">
                             <% } %>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="company" class="form-label text-capitalize">company<span class="text-danger font-weight-bold">*</span></label>
                             <% if(typeof reqBody != 'undefined' && typeof reqBody.company != 'undefined'){ %>
-                                <input type="text" value="<%= reqBody.company %>" class="form-control" name="company" id="company" placeholder="Company">
+                                <input type="text" value="<%= reqBody.company %>" class="form-control" name="company" id="company" placeholder="الشركة">
                               <% } else{ %>  
-                                <input type="text" class="form-control" name="company" id="company" placeholder="Company">
+                                <input type="text" class="form-control" name="company" id="company" placeholder="الشركة">
                             <% } %>
                         </div>
 
@@ -123,9 +138,9 @@
                         <div class="form-group mb-3">
                             <label for="title" class="form-label text-capitalize">title<span class="text-danger font-weight-bold">*</span></label>
                             <% if(typeof reqBody != 'undefined' && typeof reqBody.title != 'undefined'){ %>
-                                <input type="text" value="<%= reqBody.title %>" class="form-control" name="title" id="title" placeholder="Title">
+                                <input type="text" value="<%= reqBody.title %>" class="form-control" name="title" id="title" placeholder="الوظيفة">
                               <% } else{ %>  
-                                <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+                                <input type="text" class="form-control" name="title" id="title" placeholder="الوظيفة">
                             <% } %>
                         </div>
 
