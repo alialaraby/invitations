@@ -56,7 +56,12 @@ app.get('/', (req, res) => {
 function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
   return new Promise(async (resolve, reject) => {
     try {
-      let user = await User.findOne({ phone: request.phone.trim().toLowerCase() });
+      let phone: string = request.phone.trim().toLowerCase();
+      if(phone.startsWith('+2')){
+        phone = phone.substring(2);
+      }
+
+      let user = await User.findOne({ phone: phone });
       if (user && user.submittedRegistration) {
         return resolve({
           done: false,
@@ -119,8 +124,12 @@ function submitForm(request: any): Promise<{ done: boolean, code: any }> {
   return new Promise(async (resolve, reject) => {
     try {
       let hashedPhone = request.vertX;
+      let phone: string = request.phone.trim().toLowerCase();
+      if(phone.startsWith('+2')){
+        phone = phone.substring(2);
+      }
 
-      let user = await User.findOne({ phone: request.phone.trim().toLowerCase() });
+      let user = await User.findOne({ phone: phone });
       if (user && user.submittedRegistration) {
         return resolve({
           // message: 'Thank you, you already submitted the form',
