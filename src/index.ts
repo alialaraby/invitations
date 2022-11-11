@@ -77,6 +77,7 @@ function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
       user.sector = request.sector;
       user.title = request.title;
       user.submittedRegistration = true;
+      user.adminSentQR = true;
       await user.save();
 
       return resolve({ done: true, code: StatusCode.Ok });
