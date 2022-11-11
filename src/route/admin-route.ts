@@ -45,6 +45,7 @@ export class AdminRoute extends BaseRoute {
         this.router.post('/submit-form', urlencodedParser, validationRules, this.submitForm);
         
         this.router.get('/open-qr-code', this.openQRCode);
+        this.router.get('/open-qr-code-m', this.openQRCodeManual);
         this.router.post('/confirm-qr-code', this.confirmQRCode);
 
         this.router.post('/export', this.exportExcell);
@@ -173,6 +174,36 @@ export class AdminRoute extends BaseRoute {
         try {
             let phone: string = request.query['phone'] as string;
             let hashedPhone: string = request.query['vertX'] as string;
+            if (!phone || !hashedPhone) {
+                return response.render('invalid-qr');
+            }
+
+            let user = await User.findOne({ phone: phone.trim().toLowerCase() });
+            if (!user) return response.render('invalid-qr');
+            
+            if (user && !user.adminSentQR) return response.render('invalid-qr');
+
+            let validUser = await PasswordHelper.comparePassword(user.phone, hashedPhone);
+            if (!validUser) return response.render('invalid-qr');
+
+            var QRCode = require('qrcode');
+            let qrData = `${user.phone}*--*${hashedPhone}`;
+            var opts = {
+                errorCorrectionLevel: 'H',
+                type: 'image/jpeg'
+            }
+            QRCode.toDataURL(qrData, opts, function (err, url) {
+                return response.render('qr', { qr: url });
+            });
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public openQRCodeManual = async (request: Request, response: Response) => {
+        try {
+            let phone: string = request.query['phone'] as string;
+            let hashedPhone = phone.split('vertX')[1];
             if (!phone || !hashedPhone) {
                 return response.render('invalid-qr');
             }
