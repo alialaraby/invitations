@@ -8,6 +8,8 @@ import { BaseRoute } from "./base-route";
 const { check, validationResult } = require('express-validator');
 const bodyParser = require('body-parser');
 import path from 'path';
+var shortUrl = require("node-url-shortener");
+
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const validationRules = [
     check('fullName', 'Full name is required').not().isEmpty().trim(),
@@ -46,7 +48,23 @@ export class AdminRoute extends BaseRoute {
         this.router.post('/confirm-qr-code', this.confirmQRCode);
 
         this.router.post('/export', this.exportExcell);
+        this.router.post('/get-short-url', this.getShortUrl);
 
+    }
+
+    public getShortUrl = async (request: Request, response: Response) => {
+        try {
+
+            shortUrl.short(request.body.url, function (err, url) {
+                if(err){
+                    return response.status(200).json({message: 'no url provided'});
+                }
+                return response.status(200).json({message: 'done', url: url});
+            });
+
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
     }
 
     public adminLogin = async (request: Request, response: Response) => {
