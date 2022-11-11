@@ -39,6 +39,7 @@ export class AdminRoute extends BaseRoute {
         this.router.post('/send-invitation', this.sendInvitation);
         this.router.post('/send-invitation-vip', this.sendInvitationVip);
         this.router.post('/send-qr-code', this.sendQRCode);
+        this.router.post('/send-qr-code-m', this.sendQRCodeManual);
 
         this.router.get('/open-form', this.openForm);
         this.router.get('/open-form-m', this.openFormManual);
@@ -164,6 +165,16 @@ export class AdminRoute extends BaseRoute {
         try {
             let body = request.body;
             let returnedResponse = await this.adminController.sendQRCode(body);
+            response.status(returnedResponse.statusCode).json(returnedResponse);
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public sendQRCodeManual = async (request: Request, response: Response) => {
+        try {
+            let body = request.body;
+            let returnedResponse = await this.adminController.sendQRCodeManual(body);
             response.status(returnedResponse.statusCode).json(returnedResponse);
         } catch (error) {
             this.handleError(error, request, response);

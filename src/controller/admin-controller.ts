@@ -284,6 +284,35 @@ export class AdminController {
         });
     }
 
+    public sendQRCodeManual(request: ISendQRCode): Promise<IResponseBody> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let erroredNumbers: string[] = [];
+
+                for (let i = 0; i < request.itemIds.length; i++) {
+                    let user = await this.adminDao.getUserById(request.itemIds[i]);
+                    if(user){
+                        user.adminSentQR = true;
+                        await user.save();
+                        // let sent = await AxiosRequest.sendQRLink(user.phone, user.hashedPhone);
+                        // if(sent){
+                        // }else{
+                        //     erroredNumbers.push(user.phone);
+                        // }
+                    }
+                }
+
+                return resolve({
+                    message: 'Done',
+                    statusCode: StatusCode.Ok,
+                    erroredNumbers: erroredNumbers
+                });
+            } catch (error) {
+                reject(error)
+            }
+        });
+    }
+
     public getStatistics(request: any): Promise<IResponseBody> {
         return new Promise(async (resolve, reject) => {
             try {
