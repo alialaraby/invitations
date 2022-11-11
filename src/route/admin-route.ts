@@ -202,8 +202,10 @@ export class AdminRoute extends BaseRoute {
 
     public openQRCodeManual = async (request: Request, response: Response) => {
         try {
-            let phone: string = request.query['phone'] as string;
-            let hashedPhone = phone.split('vertX=')[1];
+            let query: string = request.query['phone'] as string;
+            let phone = query.split('vertX=')[0];
+            let hashedPhone = query.split('vertX=')[1];
+            
             if (!phone || !hashedPhone) {
                 return response.render('invalid-qr');
             }
