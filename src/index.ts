@@ -70,10 +70,15 @@ function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
       }
 
       if (!user) {
-        return resolve({
-          done: false,
-          code: StatusCode.UnAuthorized
-        });
+        // return resolve({
+        //   done: false,
+        //   code: StatusCode.UnAuthorized
+        // });
+        user = new User();
+        user.phone = phone;
+        user.invitationLink = 'xx';
+        user.hashedPhone = await PasswordHelper.hashPassword(phone);
+
       }
 
       user.fullName = request.fullName;
@@ -87,6 +92,8 @@ function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
 
       return resolve({ done: true, code: StatusCode.Ok });
     } catch (error) {
+      console.log('errorXX', error);
+      
       return resolve({ done: true, code: StatusCode.InternalServerError });
     }
   });
