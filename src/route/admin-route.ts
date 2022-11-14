@@ -51,6 +51,7 @@ export class AdminRoute extends BaseRoute {
 
         this.router.post('/export', this.exportExcell);
         this.router.post('/get-short-url', this.getShortUrl);
+        this.router.get('/event-closed', this.openEventClosed);
 
     }
 
@@ -258,7 +259,9 @@ export class AdminRoute extends BaseRoute {
 
     public openFormManual = async (request: Request, response: Response) => {
         try {
-            return response.render('form-manual');
+            // return response.render('form-manual');
+            return response.render('closed');
+
         } catch (error) {
             this.handleError(error, request, response);
         }
@@ -366,6 +369,14 @@ export class AdminRoute extends BaseRoute {
         } catch (error) {
             console.log(error);
             
+            this.handleError(error, request, response);
+        }
+    }
+
+    public openEventClosed = async (request: Request, response: Response) => {
+        try {
+            return response.render('closed');
+        } catch (error) {
             this.handleError(error, request, response);
         }
     }
