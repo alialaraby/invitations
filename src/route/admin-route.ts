@@ -53,6 +53,18 @@ export class AdminRoute extends BaseRoute {
         this.router.post('/get-short-url', this.getShortUrl);
         this.router.get('/event-closed', this.openEventClosed);
 
+        this.router.post('/send-message', this.sendMessage);
+
+    }
+
+    public sendMessage = async (request: Request, response: Response) => {
+        try {
+            let body = request.body;
+            let returnedResponse = await this.adminController.sendMessage(body);
+            response.status(returnedResponse.statusCode).json(returnedResponse);
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
     }
 
     public getShortUrl = async (request: Request, response: Response) => {

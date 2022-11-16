@@ -22,14 +22,14 @@ const validationRules = [
   check('vertX', '').not().isEmpty(),
 ];
 
-const validationRulesManual = [
-  check('fullName', 'Full name is required').not().isEmpty().trim(),
-  check('phone', 'Phone is required').not().isEmpty().trim(),
-  check('email', 'Email is required').not().isEmpty().trim(),
-  check('company', 'Company is required').not().isEmpty().trim(),
-  check('sector', 'Business Category is required').not().isEmpty().trim(),
-  check('title', 'Title is required').not().isEmpty().trim(),
-];
+// const validationRulesManual = [
+//   check('fullName', 'Full name is required').not().isEmpty().trim(),
+//   check('phone', 'Phone is required').not().isEmpty().trim(),
+//   check('email', 'Email is required').not().isEmpty().trim(),
+//   check('company', 'Company is required').not().isEmpty().trim(),
+//   check('sector', 'Business Category is required').not().isEmpty().trim(),
+//   check('title', 'Title is required').not().isEmpty().trim(),
+// ];
 
 const debug = require('debug')('app:all'); // condotional log, choose to show these log or not from env
 const app = express();
@@ -53,78 +53,78 @@ app.get('/', (req, res) => {
   res.send('Hi There!');
 });
 
-function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let phone: string = request.phone.trim().toLowerCase();
-      if(phone.startsWith('+2')){
-        phone = phone.substring(2);
-      }
+// function submitFormManual(request: any): Promise<{ done: boolean, code: any }> {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       let phone: string = request.phone.trim().toLowerCase();
+//       if(phone.startsWith('+2')){
+//         phone = phone.substring(2);
+//       }
 
-      let user = await User.findOne({ phone: phone });
-      if (user && user.submittedRegistration) {
-        return resolve({
-          done: false,
-          code: StatusCode.AlreadyExists
-        });
-      }
+//       let user = await User.findOne({ phone: phone });
+//       if (user && user.submittedRegistration) {
+//         return resolve({
+//           done: false,
+//           code: StatusCode.AlreadyExists
+//         });
+//       }
 
-      if (!user) {
-        // return resolve({
-        //   done: false,
-        //   code: StatusCode.UnAuthorized
-        // });
-        user = new User();
-        user.phone = phone;
-        user.invitationLink = 'xx';
-        user.hashedPhone = await PasswordHelper.hashPassword(phone);
+//       if (!user) {
+//         // return resolve({
+//         //   done: false,
+//         //   code: StatusCode.UnAuthorized
+//         // });
+//         user = new User();
+//         user.phone = phone;
+//         user.invitationLink = 'xx';
+//         user.hashedPhone = await PasswordHelper.hashPassword(phone);
 
-      }
+//       }
 
-      user.fullName = request.fullName;
-      user.email = request.email;
-      user.company = request.company;
-      user.sector = request.sector;
-      user.title = request.title;
-      user.submittedRegistration = true;
-      // user.adminSentQR = true;
-      await user.save();
+//       user.fullName = request.fullName;
+//       user.email = request.email;
+//       user.company = request.company;
+//       user.sector = request.sector;
+//       user.title = request.title;
+//       user.submittedRegistration = true;
+//       // user.adminSentQR = true;
+//       await user.save();
 
-      return resolve({ done: true, code: StatusCode.Ok });
-    } catch (error) {
-      console.log('errorXX', error);
+//       return resolve({ done: true, code: StatusCode.Ok });
+//     } catch (error) {
+//       console.log('errorXX', error);
       
-      return resolve({ done: true, code: StatusCode.InternalServerError });
-    }
-  });
-}
+//       return resolve({ done: true, code: StatusCode.InternalServerError });
+//     }
+//   });
+// }
 
-app.post('/submit-manual', urlencodedParser, validationRulesManual, async (request, response) => {
-  const errors = validationResult(request)
-  let body = request.body;
-  if (!errors.isEmpty()) {
-    const alert = errors.array();
-    return response.render('form', { alert: alert, reqBody: body, vertX: body.vertX });
-  } else {
-    let result = await submitFormManual(body);
-    switch (result.code) {
-      case StatusCode.AlreadyExists:
-        return response.render('already-submitted');
+// app.post('/submit-manual', urlencodedParser, validationRulesManual, async (request, response) => {
+//   const errors = validationResult(request)
+//   let body = request.body;
+//   if (!errors.isEmpty()) {
+//     const alert = errors.array();
+//     return response.render('form', { alert: alert, reqBody: body, vertX: body.vertX });
+//   } else {
+//     let result = await submitFormManual(body);
+//     switch (result.code) {
+//       case StatusCode.AlreadyExists:
+//         return response.render('already-submitted');
 
-      case StatusCode.UnAuthorized:
-        return response.render('not-eligible');
+//       case StatusCode.UnAuthorized:
+//         return response.render('not-eligible');
 
-      case StatusCode.Ok:
-        return response.render('success');
+//       case StatusCode.Ok:
+//         return response.render('success');
 
-      case StatusCode.InternalServerError:
-        return response.render('some-error');
+//       case StatusCode.InternalServerError:
+//         return response.render('some-error');
 
-      default:
-        return response.render('some-error');
-    }
-  }
-});
+//       default:
+//         return response.render('some-error');
+//     }
+//   }
+// });
 
 
 function submitForm(request: any): Promise<{ done: boolean, code: any }> {

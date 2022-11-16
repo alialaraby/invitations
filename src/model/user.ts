@@ -17,6 +17,7 @@ export interface IUser extends Document {
     adminSentQR: boolean;
     attendedEvent: boolean;
     isVip: boolean;
+    followUpSent: boolean;
 }
 
 export const AdminSchema: Schema = new Schema<IUser>(
@@ -51,6 +52,7 @@ export const AdminSchema: Schema = new Schema<IUser>(
         adminSentQR: { type: Boolean, default: false },
         attendedEvent: { type: Boolean, default: false },
         isVip: { type: Boolean, default: false },
+        followUpSent: { type: Boolean, default: false },
     }, {
         collection: 'user',
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }

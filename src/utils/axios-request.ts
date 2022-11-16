@@ -95,6 +95,51 @@ export class AxiosRequest {
         })
     }
 
+    public static sendFollowUpMessage(phone: string, message: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+
+            const config = {
+                headers: { Authorization: `Bearer ${Token}` }
+            };
+
+            axios.post(`https://graph.facebook.com/${Version}/${PhoneNumberId}/messages`,
+                { 
+                    "messaging_product": "whatsapp", 
+                    "recipient_type": "individual",
+                    "to": `2${phone}`, 
+                    "type": "template", 
+                    "template": {
+                        "name": "followup5",
+                        "language": {
+                            "code": "en"
+                        }, 
+                        "components": [{
+                            "type": "body",
+                            // "sub_type": "url",
+                            "parameters": [
+                                {
+                                    "type": "text",
+                                    "text": `${message}`
+                                }
+                            ]
+                        }]
+                    }
+                },
+                    config
+            )
+                .then(function (response: any) {
+                    console.log('Then');
+                    
+                    resolve(true);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log('Error');
+                    resolve(false);
+                });
+        })
+    }
+
     public static getAuthRequestToken(): Promise<any> {
         return new Promise((resolve, reject) => {
             axios.post(

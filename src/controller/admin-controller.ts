@@ -352,4 +352,43 @@ export class AdminController {
         });
     }
 
+    public sendMessage(request: any): Promise<IResponseBody> {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let erroredNumbers: string[] = [];
+                let numbersAlreadySent: string[] = [];
+                let phones = request.phones;
+                for (let i = 0; i < phones.length; i++) {
+                    if(phones[i] && phones[i].trim().length > 0){
+                        try {
+                            let user = await this.adminDao.getUserByPhone(phones[i]);
+                            if(user){
+                                let sent = await AxiosRequest.sendFollowUpMessage(phones[i], request.message);
+                                if(!sent){
+                                    erroredNumbers.push(phones[i]);
+                                }else{
+                                    user.followUpSent = true;
+                                    await user.save();
+                                }
+                            }else{
+                                erroredNumbers.push(phones[i]);
+                            }
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                }
+
+                return resolve({
+                    message: 'Done',
+                    statusCode: StatusCode.Ok,
+                    erroredNumbers: erroredNumbers
+                });
+            } catch (error) {
+                reject(error)
+            }
+        });
+    }
+
 }

@@ -122,16 +122,16 @@
                         <div class="form-group mb-3">
                             <label for="sector" class="form-label">Business Category <span class="text-danger font-weight-bold">*</span></label>
                             <select class="form-select form-control" aria-label="Default select example" name="sector" id="sector">
-                                <option selected value="">Business Category</option>
-                                <option value="Architect">Architect</option>
-                                <option value="Consultant">Consultant</option>
-                                <option value="Developer">Developer</option>
-                                <option value="General Contractor">General Contractor</option>
-                                <option value="Infrastructure Contractor">Infrastructure Contractor</option>
-                                <option value="Interiors">Interiors</option>
-                                <option value="Landscape Contractor">Landscape Contractor</option>
-                                <option value="Traders">Traders</option>
-                                <option value="Others">Others</option>
+                                <option value="">Business Category</option>
+                                <option value="Architect" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Architect') ? 'selected' : ''%> >Architect</option>
+                                <option value="Consultant" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Consultant') ? 'selected' : ''%>>Consultant</option>
+                                <option value="Developer" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Developer') ? 'selected' : ''%>>Developer</option>
+                                <option value="General Contractor" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'General Contractor') ? 'selected' : ''%>>General Contractor</option>
+                                <option value="Infrastructure Contractor" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Infrastructure Contractor') ? 'selected' : ''%>>Infrastructure Contractor</option>
+                                <option value="Interiors" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Interiors') ? 'selected' : ''%>>Interiors</option>
+                                <option value="Landscape Contractor" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Landscape Contractor') ? 'selected' : ''%>>Landscape Contractor</option>
+                                <option value="Traders" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Traders') ? 'selected' : ''%>>Traders</option>
+                                <option value="Others" <%= (typeof reqBody != 'undefined' && typeof reqBody.sector != 'undefined' && reqBody.sector === 'Others') ? 'selected' : ''%>>Others</option>
                             </select>
                         </div>
 
