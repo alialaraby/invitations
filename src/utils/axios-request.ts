@@ -109,7 +109,7 @@ export class AxiosRequest {
                     "to": `2${phone}`, 
                     "type": "template", 
                     "template": {
-                        "name": "followup5",
+                        "name": "followup6",
                         "language": {
                             "code": "en"
                         }, 

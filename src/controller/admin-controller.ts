@@ -362,18 +362,28 @@ export class AdminController {
                 for (let i = 0; i < phones.length; i++) {
                     if(phones[i] && phones[i].trim().length > 0){
                         try {
+
                             let user = await this.adminDao.getUserByPhone(phones[i]);
                             if(user){
-                                let sent = await AxiosRequest.sendFollowUpMessage(phones[i], request.message);
-                                if(!sent){
-                                    erroredNumbers.push(phones[i]);
-                                }else{
-                                    user.followUpSent = true;
-                                    await user.save();
-                                }
+                                await AxiosRequest.sendFollowUpMessage(phones[i], request.message);
+                                user.followUpSent = true;
+                                await user.save();
                             }else{
-                                erroredNumbers.push(phones[i]);
+                                await AxiosRequest.sendFollowUpMessage(phones[i], request.message);
                             }
+
+                            // let user = await this.adminDao.getUserByPhone(phones[i]);
+                            // if(user){
+                            //     let sent = await AxiosRequest.sendFollowUpMessage(phones[i], request.message);
+                            //     if(!sent){
+                            //         erroredNumbers.push(phones[i]);
+                            //     }else{
+                            //         user.followUpSent = true;
+                            //         await user.save();
+                            //     }
+                            // }else{
+                            //     erroredNumbers.push(phones[i]);
+                            // }
                         } catch (error) {
                             console.log(error);
                         }
