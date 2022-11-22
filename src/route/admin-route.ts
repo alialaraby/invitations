@@ -54,6 +54,7 @@ export class AdminRoute extends BaseRoute {
         this.router.get('/event-closed', this.openEventClosed);
 
         this.router.post('/send-message', this.sendMessage);
+        this.router.get('/clear-db', this.clearDB);
 
     }
 
@@ -388,6 +389,19 @@ export class AdminRoute extends BaseRoute {
     public openEventClosed = async (request: Request, response: Response) => {
         try {
             return response.render('closed');
+        } catch (error) {
+            this.handleError(error, request, response);
+        }
+    }
+
+    public clearDB = async (request: Request, response: Response) => {
+        try {
+            await User.deleteMany({});
+
+            return response.status(StatusCode.Ok).json({
+                message: "Done.",
+                statusCode: StatusCode.Ok
+            });
         } catch (error) {
             this.handleError(error, request, response);
         }
